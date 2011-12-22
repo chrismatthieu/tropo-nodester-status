@@ -1,10 +1,10 @@
 var http = require('http');
-require('tropo-webapi');
+var tropowebapi = require('tropo-webapi');
 
 http.createServer(function (req, res) {
 
 	// Create a new instance of the TropoWebAPI object.
-	var tropo = new TropoWebAPI();
+	var tropo = new tropowebapi.TropoWebAPI(); 
 	tropo.say("Please hold while Tropo checks on the status of nodester.");
 
 	// // Demonstrates how to use the base Tropo action classes.
@@ -16,7 +16,8 @@ http.createServer(function (req, res) {
 	// tropo.on("continue", null, "http://somefakehost.com:8000/", true);
 
 	// Render out the JSON for Tropo to consume.
-	response.writeHead(200, {'Content-Type': 'application/json'}); 
-	response.end(TropoJSON(tropo));
+	res.writeHead(200, {'Content-Type': 'application/json'}); 
+	res.end(tropowebapi.TropoJSON(tropo));
+	// response.send(tropowebapi.TropoJSON(tropo));
 	
 }).listen(13151);
