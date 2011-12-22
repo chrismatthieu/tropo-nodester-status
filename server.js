@@ -1,5 +1,5 @@
 var http = require('http');
-require('../lib/tropo-webapi');
+require('tropo-webapi');
 
 http.createServer(function (req, res) {
 
