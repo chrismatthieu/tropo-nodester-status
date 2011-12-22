@@ -1,23 +1,25 @@
 var http = require('http');
 var tropowebapi = require('tropo-webapi');
+var request = require('request');
 
 http.createServer(function (req, res) {
 
 	// Create a new instance of the TropoWebAPI object.
-	var tropo = new tropowebapi.TropoWebAPI(); 
-	tropo.say("Please hold while Tropo checks on the status of nodester.");
+	var tropo = new tropowebapi.TropoWebAPI(); 	
 
-	// // Demonstrates how to use the base Tropo action classes.
-	// var say = new Say("Please enter your 5 digit zip code.");
-	// var choices = new Choices("[5 DIGITS]");
-	// 
-	// // Action classes can be passes as parameters to TropoWebAPI class methods.
-	// tropo.ask(choices, 3, false, null, "foo", null, true, say, 5, null);
-	// tropo.on("continue", null, "http://somefakehost.com:8000/", true);
+	// Fetch Nodester status -> http://api.nodester.com/status
+	// returns {"status":"up","appshosted":2878,"appsrunning":1759}
+	request('http://api.nodester.com/status', function (error, response, body) {
+	     if (!error && response.statusCode == 200) {
 
-	// Render out the JSON for Tropo to consume.
-	res.writeHead(200, {'Content-Type': 'application/json'}); 
-	res.end(tropowebapi.TropoJSON(tropo));
-	// response.send(tropowebapi.TropoJSON(tropo));
+	       // console.log(body) // Print status
+	       var statusreq = JSON.parse(body);
+
+	       tropo.say('nodester is ' + statusreq["status"] + ' and hosting ' + statusreq["appshosted"] + ' applications with '+ statusreq["appsrunning"] + ' running at the moment ');
+
+	       res.writeHead(200, {'Content-Type': 'application/json'}); 
+           res.end(tropowebapi.TropoJSON(tropo));
+	     }
+	   })
 	
 }).listen(13151);
